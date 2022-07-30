@@ -51,15 +51,6 @@ public class DummyControllerTest {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	// http://localhost:8888/blog/dummy/user/1
 	@Transactional // 함수 종료 시에 자동으로 commit 됨.
 	@PutMapping("/dummy/user/{id}")
