@@ -3,6 +3,7 @@ package com.cos.blog.model;
 import java.sql.Timestamp;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,9 +14,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,12 +51,14 @@ public class Board {
 	@JoinColumn(name="userId")
 	private User user; //DB는 오브젝트를 저장할 수 없다. FK, 자바는 오브젝트를 저장할 수 있다.
 	
-	@OneToMany(mappedBy = "board", fetch = FetchType.EAGER) 
+	@OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE) 
 	// 기본 페치 전략: fetch = FetchType.LAZY 필요에따라 땡겨오겠다.(ex 펼치기)
 	// mappedBy 연관관계의 주인이아니다(난 FK가 아니에요) DB에 컬럼을 만들지 마세요
 	// 하나의 게시글은 여러개의 답글을 들고 올 수 있다
 	// @JoinColumn(name="replyId") fk 가 필요없다 원자성깨짐
-	private List<Reply> reply; 
+	@JsonIgnoreProperties({"board"}) 	// 무한참조 방지
+	@OrderBy("id desc")
+	private List<Reply> replys; 
 	
 	@CreationTimestamp
 	private Timestamp createDate;
